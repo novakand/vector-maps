@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Vector Maps / jsVectorMap</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    />
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/jsvectormap/dist/css/jsvectormap.min.css"
+    />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                sans-serif;
+            background: #050816;
+            color: #fff;
+        }
+
+        #maps {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .marker-popup {
+            position: absolute;
+            transform: translate(-50%, -115%);
+            z-index: 1000;
+            pointer-events: auto;
+        }
+
+        .marker__popup {
+            position: relative;
+            padding: 12px 14px 10px;
+            min-width: 220px;
+            max-width: 260px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+            font-family: inherit;
+            font-size: 12px;
+            line-height: 1.4;
+            z-index: 10000;
+            color: black;
+            pointer-events: auto;
+            bottom: -20px;
+        }
+
+        .marker__popup-title {
+            margin: 0 22px 6px 0;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .marker__popup-close {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            border: none;
+            background: transparent;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 15px;
+            line-height: 1;
+            padding: 2px;
+        }
+
+        .marker__popup-close:hover {
+            color: #e5e7eb;
+        }
+
+        .popup-address {
+            margin-top: 4px;
+        }
+
+        .popup-address-label {
+            font-weight: 500;
+            color: #9ca3af;
+            margin-right: 4px;
+        }
+
+        .popup-address-value {
+            color: black;
+        }
+
+        #maps .jvm-marker {
+            cursor: pointer;
+        }
+
+        #maps svg {
+            shape-rendering: geometricPrecision;
+        }
+
+        #maps svg text {
+            fill: #cbd6ea;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 0.01em;
+            opacity: 0.9;
+            paint-order: stroke;
+            stroke: #050816;
+            stroke-width: 1.3px;
+            stroke-linejoin: round;
+
+            user-select: none;
+        }
+
+        #maps.hide-region-labels text {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="maps"></div>
+
+    <!-- Шаблон попапа (аналог popup-template из примера с ymaps) -->
+    <template id="popup-template">
+        <div class="marker__popup">
+            <button
+                type="button"
+                class="marker__popup-close"
+            >×</button>
+            <div class="marker__popup-title"></div>
+
+            <div
+                class="popup-address"
+                hidden
+            >
+                <span class="popup-address-label">Адрес:</span>
+                <span class="popup-address-value"></span>
+            </div>
+        </div>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap"></script>
+    <script src="./data/russia.js"></script>
+
+
+<script>
+        let map = null;
+        let markersData = [];
+        let currentPopup = null;
+
+        const datGeoJson = {
+            type: "FeatureCollection",
+            features: [
+                {
+                    type: "Feature",
+                    properties: {
+                        id: 1,
+                        citySource: "Нижний Новгород",
+                        addressSource: "Рязанская область, Рязанский район, п. Искра",
+                        org: "АО «Рязанский свинокомплекс»",
+                        country: "Россия",
+                        countryCode: "RU",
+                        region: "Рязанская область",
+                        city: "п. Искра",
+                        street: "",
+                        house: "",
+                        postalCode: "",
+                        fullAddress: "Рязанская область, Рязанский район, п. Искра",
+                    },
+                    geometry: {
+                        type: "Point",
+                        coordinates: [39.891999, 54.445544],
+                    },
+                },
+                {
+                    type: "Feature",
+                    properties: {
+                        id: 2,
+                        citySource: "с. Горелое",
+                        addressSource: "Тамбовская область, Тамбовский р-н., с. Горелое",
+                        org: "АО «Агрокомплекс «Тамбовский»",
+                        country: "Россия",
+                        countryCode: "RU",
+                        region: "Тамбовская область",
+                        city: "с. Горелое",
+                        street: "",
+                        house: "",
+                        postalCode: "",
+                        fullAddress: "Тамбовская область, Тамбовский р-н., с. Горелое",
+                    },
+                    geometry: {
+                        type: "Point",
+                        coordinates: [41.497935, 52.920688],
+                    },
+                },
+                {
+                    type: "Feature",
+                    properties: {
+                        id: 3,
+                        citySource: "",
+                        addressSource: "Смоленская область, Гагаринский р-н.",
+                        org: "ЗАО «Агропромышленная фирма «Наша житница»",
+                        country: "Россия",
+                        countryCode: "RU",
+                        region: "Нижегородская область",
+                        city: "",
+                        street: "",
+                        house: "",
+                        postalCode: "",
+                        fullAddress: "Смоленская область, Гагаринский р-н.",
+                    },
+                    geometry: {
+                        type: "Point",
+                        coordinates: [34.986739, 55.610372],
+                    },
+                },
+            ],
+        };
+
+        function geoJsonToMarkers(geoJson) {
+            if (!geoJson || geoJson.type !== "FeatureCollection" || !Array.isArray(geoJson.features)) {
+                console.warn("Invalid GeoJSON", geoJson);
+                return [];
+            }
+
+            return geoJson.features
+                .filter((feature) => feature && feature.geometry && feature.geometry.type === "Point" && Array.isArray(feature.geometry.coordinates))
+                .map((feature) => {
+                    const [lng, lat] = feature.geometry.coordinates;
+                    const props = feature.properties || {};
+
+                    return {
+                        coords: [lat, lng],
+                        name: props.org || props.city || "",
+                        data: props,
+                    };
+                });
+        }
+
+        const getGeoJsonBounds = (geoJson) => {
+            const coords = geoJson?.features
+                ?.map((f) => f?.geometry?.coordinates)
+                ?.filter((c) => Array.isArray(c) && c.length === 2)
+                ?.filter(([lng, lat]) => Number.isFinite(lng) && Number.isFinite(lat));
+
+            if (!coords?.length) return null;
+
+            const [minLng, maxLng, minLat, maxLat] = coords.reduce(
+                ([minLng, maxLng, minLat, maxLat], [lng, lat]) => [
+                    minLng === null || lng < minLng ? lng : minLng,
+                    maxLng === null || lng > maxLng ? lng : maxLng,
+                    minLat === null || lat < minLat ? lat : minLat,
+                    maxLat === null || lat > maxLat ? lat : maxLat,
+                ],
+                [null, null, null, null]
+            );
+
+            return [
+                [minLng, minLat],
+                [maxLng, maxLat],
+            ];
+        };
+
+        function getGeoJsonCenter(geoJson) {
+            const bounds = getGeoJsonBounds(geoJson);
+            if (!bounds) return [55, 37];
+
+            const [[minLng, minLat], [maxLng, maxLat]] = bounds;
+            const centerLat = (minLat + maxLat) / 2;
+            const centerLng = (minLng + maxLng) / 2;
+
+            return [centerLat, centerLng];
+        }
+
+        function getGeoJsonScale(geoJson) {
+            const bounds = getGeoJsonBounds(geoJson);
+            if (!bounds) return 3;
+
+            const [[, minLat], [, maxLat]] = bounds;
+            const span = Math.abs(maxLat - minLat);
+
+            if (span > 60) return 1.2;
+            if (span > 30) return 1.6;
+            if (span > 15) return 2.2;
+            if (span > 8) return 3;
+            return 4;
+        }
+
+        const pinSvg = `
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 0C14.076 0 6 8.132 6 18.13C6 32.336 22.308 47.004 23.002 47.62C23.288 47.874 23.644 48 24 48C24.356 48 24.712 47.874 24.998 47.622C25.692 47.004 42 32.336 42 18.13C42 8.132 33.924 0 24 0ZM24 28C18.486 28 14 23.514 14 18C14 12.486 18.486 8 24 8C29.514 8 34 12.486 34 18C34 23.514 29.514 28 24 28Z" fill="white"/>
+            </svg>
+        `;
+
+        const pinDataUrl = "data:image/svg+xml;utf8," + encodeURIComponent(pinSvg);
+
+        const buildPopupTemplate = (props = {}) => {
+            const tpl = document.getElementById("popup-template");
+            const node = tpl.content.cloneNode(true);
+
+            const { addressSource, org } = props;
+            const title = org || " ";
+
+            node.querySelector(".marker__popup-title").textContent = title;
+
+            if (addressSource) {
+                const el = node.querySelector(".popup-address");
+                el.hidden = false;
+                el.querySelector(".popup-address-value").textContent = addressSource;
+            }
+
+            const wrapper = document.createElement("div");
+            wrapper.appendChild(node);
+
+            return wrapper.innerHTML.trim();
+        };
+
+        function buildPopupContent(properties = {}) {
+            const contentEl = document.createElement("div");
+            contentEl.className = "marker__popup-content";
+            contentEl.innerHTML = buildPopupTemplate(properties);
+
+            const closeBtn = contentEl.querySelector(".marker__popup-close");
+            if (closeBtn) {
+                closeBtn.addEventListener("click", () => onClosePopup());
+            }
+
+            return contentEl;
+        }
+
+        function onClosePopup() {
+            if (currentPopup && currentPopup.parentNode) {
+                currentPopup.parentNode.removeChild(currentPopup);
+                currentPopup = null;
+            }
+        }
+
+       function getMarkerScreenPosFromMapAPI(markerIndex) {
+  if (!map) return null;
+
+  // 1) Попытка: map.getMarkerPosition(markerIndex) — часто возвращает {x, y}
+  // (в некоторых версиях параметр может отличаться, поэтому окружим try/catch).
+  try {
+    const pos = map.getMarkerPosition && map.getMarkerPosition(markerIndex);
+    if (pos && typeof pos.x === 'number' && typeof pos.y === 'number') {
+      return { x: pos.x, y: pos.y };
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  // 2) Попытка: coordsToPoint. У нас markersData хранит coords как [lat, lng]
+  // jsVectorMap часто ожидает [lng, lat] — попробуем оба варианта.
+  try {
+    const marker = markersData[markerIndex];
+    if (marker && marker.coords) {
+      // порядок в markersData — [lat, lng], но coordsToPoint может ожидать [lng, lat]
+      const lat = marker.coords[0];
+      const lng = marker.coords[1];
+
+      // попробовать оба варианта
+      if (map.coordsToPoint) {
+        let p = map.coordsToPoint([lng, lat]); // наиболее вероятно
+        if (p && typeof p.x === 'number' && typeof p.y === 'number') {
+          return { x: p.x, y: p.y };
+        }
+        // fallback: возможно map.coordsToPoint ожидает [lat, lng]
+        p = map.coordsToPoint([lat, lng]);
+        if (p && typeof p.x === 'number' && typeof p.y === 'number') {
+          return { x: p.x, y: p.y };
+        }
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+
+  return null;
+}
+
+/**
+ * DOM fallback: вычисляем позицию реального SVG-элемента маркера в контейнере.
+ * Возвращает {x,y} или null.
+ */
+function getMarkerScreenPosFromDOM(markerIndex) {
+  const container = document.getElementById('maps');
+  if (!container) return null;
+
+  const markerGroups = container.querySelectorAll('g.jvm-marker');
+  if (!markerGroups || markerIndex >= markerGroups.length) return null;
+
+  const g = markerGroups[markerIndex];
+  const gRect = g.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+
+  // центр группы (внутри контейнера)
+  const x = gRect.left - containerRect.left + gRect.width / 2;
+  const y = gRect.top - containerRect.top + gRect.height / 2;
+
+  return { x, y };
+}
+
+/**
+ * Универсальная функция: попробуем API карты, затем DOM fallback.
+ * Возвращаем позицию в координатах контейнера #maps.
+ */
+function getMarkerScreenPosition(markerIndex) {
+  let pos = getMarkerScreenPosFromMapAPI(markerIndex);
+  if (pos) return pos;
+  pos = getMarkerScreenPosFromDOM(markerIndex);
+  return pos;
+}
+
+// --- ПОЗИЦИОНИРОВАНИЕ ПОПАПА --- //
+
+/**
+ * Ставит popup элемент над маркером (markerIndex) и ограничивает по границам контейнера.
+ * popupEl уже должен быть в DOM.
+ */
+function positionPopupOverMarker(popupEl, markerIndex) {
+  const container = document.getElementById('maps');
+  if (!container || !popupEl) return;
+
+  const contRect = container.getBoundingClientRect();
+  const popupRect = popupEl.getBoundingClientRect();
+
+  const markerPos = getMarkerScreenPosition(markerIndex);
+  if (!markerPos) {
+    // fallback — центрим
+    popupEl.style.left = `${(contRect.width - popupRect.width) / 2}px`;
+    popupEl.style.top = `${(contRect.height - popupRect.height) / 3}px`;
+    return;
+  }
+
+  // рассчитываем левый/топ так, чтобы попап был по центру маркера и чуть выше него
+  const POPUP_OFFSET_Y = 16; // насколько сверху от центра маркера показываем
+  let left = markerPos.x - popupRect.width / 2;
+  let top = markerPos.y - popupRect.height - POPUP_OFFSET_Y;
+
+  // ограничение по краям контейнера (10px padding)
+  const PAD = 10;
+  if (left < PAD) left = PAD;
+  if (left + popupRect.width > contRect.width - PAD) left = contRect.width - popupRect.width - PAD;
+  if (top < PAD) {
+    // если нет места сверху — показываем снизу маркера
+    top = markerPos.y + POPUP_OFFSET_Y;
+    if (top + popupRect.height > contRect.height - PAD) {
+      // если и снизу не помещается — ограничим
+      top = contRect.height - popupRect.height - PAD;
+    }
+  }
+
+  popupEl.style.left = `${Math.round(left)}px`;
+  popupEl.style.top = `${Math.round(top)}px`;
+
+  // сохраните индекс маркера в попапе, чтобы при onViewportChange / onResize можно было перепозиционировать
+  popupEl.dataset.markerIndex = String(markerIndex);
+}
+
+/**
+ * Если в DOM уже открыт попап — перепозиционируем его (например при зуме/пане).
+ */
+function repositionCurrentPopup() {
+  if (!currentPopup) return;
+  const idx = currentPopup.dataset?.markerIndex;
+  if (typeof idx === 'undefined') return;
+  const markerIndex = Number(idx);
+  positionPopupOverMarker(currentPopup, markerIndex);
+}
+
+// --- ОТКРЫТИЕ/ЗАКРЫТИЕ --- //
+
+function onOpenPopupForMarker(markerProps, markerIndex) {
+  const container = document.getElementById("maps");
+  if (!container) return;
+  onClosePopup();
+
+  const popupContent = buildPopupContent(markerProps);
+  const wrapper = document.createElement("div");
+  wrapper.className = "marker-popup";
+  wrapper.appendChild(popupContent);
+
+  // добавляем в DOM до позиционирования (нужно для getBoundingClientRect)
+  container.appendChild(wrapper);
+  currentPopup = wrapper;
+
+  // позиционируем над маркером
+  positionPopupOverMarker(wrapper, markerIndex);
+}
+
+function onMarkerClick(event, index) {
+  // index — индекс маркера в markersData (jsVectorMap передаёт его)
+  const marker = markersData[index];
+  if (!marker || !marker.data) return;
+
+  const props = marker.data;
+  const infoFields = [props.city, props.org, props.fullAddress].filter(Boolean);
+  if (!infoFields.length) return;
+
+  // Открываем по маркеру (не по event.clientX/Y)
+  onOpenPopupForMarker(props, index);
+}
+        
+        function addGeoJsonFeatures(geoJson) {
+            markersData = geoJsonToMarkers(geoJson);
+        }
+
+        function updateRegionLabelsVisibility(scale) {
+            const container = document.getElementById('maps');
+            if (!container) return;
+
+            const HIDE_LABELS_THRESHOLD = 1.8;
+
+            if (scale < HIDE_LABELS_THRESHOLD) {
+                container.classList.add('hide-region-labels');
+            } else {
+                container.classList.remove('hide-region-labels');
+            }
+        }
+
+        function initMap() {
+            const container = document.getElementById("maps");
+            if (!container) return;
+
+            addGeoJsonFeatures(datGeoJson);
+
+            const center = getGeoJsonCenter(datGeoJson);
+            const scale = getGeoJsonScale(datGeoJson);
+
+            const YMAP_COLORS = {
+                land: "#273b63",
+                landHover: "#2e456f",
+                landSelected: "#314b78",
+                border: "#325382",
+                water: "#041e49",
+            };
+
+            map = new jsVectorMap({
+                selector: "#maps",
+                map: "russia",
+                backgroundColor: YMAP_COLORS.water,
+                zoomButtons: false,
+                zoomOnScroll: true,
+                zoomStep: 1.5,
+                showTooltip: false,
+
+                markers: markersData,
+                markerStyle: {
+                    initial: {
+                        image: pinDataUrl,
+                        width: 48,
+                        height: 48
+                    },
+                    hover: {
+                        opacity: 0.9
+                    },
+                    selected: {
+                        opacity: 1
+                    }
+                },
+
+                regionStyle: {
+                    initial: {
+                        fill: YMAP_COLORS.land,
+                        "stroke-width": 0.35,
+                        "stroke-opacity": 0.7,
+                        "stroke-linejoin": "round",
+                        "stroke-linecap": "round",
+                    },
+                    hover: {
+                        fill: YMAP_COLORS.landHover,
+                        "stroke-width": 0.45,
+                        "stroke-opacity": 0.9,
+                    },
+                    selected: {
+                        fill: YMAP_COLORS.landSelected,
+                        "stroke-width": 0.5,
+                    }
+                },
+
+                labels: {
+                    regions: {
+                        render(code) { return ""; },
+                        offsets(code) { return [0, 0]; }
+                    },
+                    markers: {
+                        render(marker) {
+                            return marker.name || marker.data?.city || "";
+                        },
+                        offsets(markerIndex) {
+                            return [20, 4];
+                        }
+                    },
+                },
+
+                focusOn: {
+                    coords: center,
+                    scale,
+                    animate: true,
+                },
+
+                onLoaded(mapInstance) {
+                    console.log('Map loaded:', mapInstance);
+                    window.addEventListener("resize", () => {
+                        mapInstance.updateSize();
+                    });
+                },
+
+                onMarkerClick(event, index) {
+                   // onMarkerClick(event, index);
+                },
+
+                onViewportChange(scale, transX, transY) {
+                    onClosePopup();
+                    updateRegionLabelsVisibility(scale);
+                }
+            });
+
+            updateRegionLabelsVisibility(scale);
+        }
+
+        document.addEventListener("DOMContentLoaded", initMap);
+    </script>
+</body>
+
+</html>
