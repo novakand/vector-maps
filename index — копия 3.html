@@ -30,197 +30,10 @@
             color: #fff;
         }
 
-
-        /* ---------- MAP DESCRIPTION ---------- */
-
-        .map-description {
-            max-width: 900px;
-            margin: 32px auto 0;
-            padding: 0 16px;
-            text-align: center;
-            font-size: 20px;
-            line-height: 1.6;
-            color: #64748b;
-        }
-
-        /* ---------- SERVICE AREAS HEADER ---------- */
-
-        .service-areas__header {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            margin-bottom: 48px;
-        }
-
-        .service-areas__header span {
-            flex: 0 0 160px;
-            /* длина линии */
-            height: 1px;
-            background: #e2e8f0;
-        }
-
-        .service-areas__header h2 {
-            margin: 0;
-            font-size: 32px;
-            font-weight: 700;
-            color: #002149;
-            white-space: nowrap;
-        }
-
-
-        .map-divider {
-            max-width: 820px;
-            height: 1px;
-            margin: 48px auto 64px;
-            background: #e2e8f0;
-        }
-
-        .map-section {
-            padding: 48px 0;
-            background: #fff;
-        }
-
         #maps {
-            max-width: 1200px;
-            height: 520px;
-            /* ключевой момент */
-            margin: 0 auto;
-        }
-
-        .service-areas {
-            padding: 64px 16px 80px;
-            background: #ffffff;
-        }
-
-        .service-areas__inner {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .service-areas__title {
-            text-align: center;
-            font-size: 32px;
-            font-weight: 700;
-            color: #ffab1e;
-            margin-bottom: 48px;
-        }
-
-        /* GRID как в jvm-docs */
-        .service-areas__grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px 32px;
-        }
-
-        /* список */
-        .service-areas__grid ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .service-areas__grid li {
-            margin-bottom: 10px;
-        }
-
-        .service-areas__grid a {
-            font-size: 16px;
-            color: #002149;
-            text-decoration: none;
-            line-height: 1.4;
-        }
-
-        .service-areas__grid a:hover {
-            text-decoration: underline;
-            color: #0f172a;
-        }
-
-        /* ---------- RESPONSIVE ---------- */
-
-        @media (max-width: 1024px) {
-            .service-areas__grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-
-
-        .map-section {
-            padding: 8px 0;
-            background: #fff;
-        }
-
-        #maps {
-            /* max-width: 1200px; */
-            max-width: initial;
-            height: 680px;
-            margin: 0 auto;
-            overflow: hidden;
-            /* 🔑 */
-            /* тот же цвет, что у карты */
-            border-radius: 12px;
-            /* опционально, но красиво */
-        }
-
-        /* #maps {
-            max-width: 1200px;
-            height: 680px;
-            margin: 0 auto;
-        } */
-
-        .service-areas {
-            padding: 64px 16px 80px;
-            background: #fff;
-        }
-
-        .service-areas__inner {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-
-        .service-areas__grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px 32px;
-        }
-
-        .service-areas__grid ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .service-areas__grid li {
-            margin-bottom: 10px;
-        }
-
-        .service-areas__grid a {
-            font-size: 16px;
-            color: #002149;
-            text-decoration: none;
-        }
-
-        .service-areas__grid a:hover {
-            text-decoration: underline;
-            color: #002149;
-        }
-
-        /* Адаптив */
-        @media (max-width: 1024px) {
-            .service-areas__grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            #maps {
-                height: 380px;
-            }
-
-            .service-areas__grid {
-                grid-template-columns: 1fr;
-            }
+            position: relative;
+            width: 100%;
+            height: 100vh;
         }
 
         .jvm-region.jvm-element:hover {}
@@ -231,8 +44,6 @@
 
         #maps svg {
             shape-rendering: geometricPrecision;
-            display: block;
-            margin: 0 auto;
         }
 
 
@@ -277,110 +88,15 @@
             padding: 8px 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, .15);
         }
-
-
-        .service-areas__grid a {
-            display: inline-block;
-            padding: 6px 0;
-            font-size: 18px;
-            color: #002149;
-            text-decoration: none;
-        }
-
-        .service-areas__grid a:hover {
-            text-decoration: underline;
-        }
-
-
-        .service-areas__header {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-            margin-bottom: 40px;
-        }
-
-        .service-areas__header span {
-            flex: 1;
-            height: 1px;
-            background: #e2e8f0;
-        }
-
-        .service-areas__header h2 {
-            margin: 0;
-            font-size: 30px;
-            font-weight: 700;
-            color: #002149;
-            letter-spacing: 0.02em;
-        }
-
-
-        .service-areas__grid ul {
-            list-style: disc;
-            padding-left: 18px;
-        }
-
-        .service-areas__grid li {
-            margin-bottom: 10px;
-        }
-
-        .service-areas__grid li::marker {
-            color: #002149;
-        }
-
-
-        @media (max-width: 600px) {
-            #maps {
-                height: 380px;
-            }
-
-            .map-description {
-                font-size: 18px;
-            }
-
-            .service-areas__header h2 {
-                font-size: 22px;
-            }
-
-            .service-areas__grid a {
-                font-size: 16px;
-            }
-
-            .service-areas__grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
+
+    <style id="region-hover-allowlist"></style>
 </head>
 
 <body>
 
 
-    <section class="map-section">
-        <div id="maps"></div>
-        <div class="map-divider"></div>
-        <p class="map-description">
-            We provide TV mounting and installation services throughout all of Orlando
-            and the surrounding Central Florida areas. Our team is ready to serve you
-            in every neighborhood.
-        </p>
-
-    </section>
-
-    <section class="service-areas">
-        <div class="service-areas__inner">
-            <div class="service-areas__header">
-                <span></span>
-                <h2>Our Service Areas</h2>
-                <span></span>
-            </div>
-
-            <div
-                id="service-areas-list"
-                class="service-areas__grid"
-            ></div>
-        </div>
-    </section>
-    </section>
+    <div id="maps"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/jsvectormap"></script>
     <script src="./data/regions/orlando-metro.js"></script>
@@ -397,11 +113,11 @@
         const REGIONS = {
             downtown_orlando: {
                 label: "Downtown Orlando",
-                url: "/pages/downtown-orlando"
+                url: "/pages/downtown-orlando.html"
             },
             saint_cloud: {
                 label: "Saint Cloud",
-                url: "/pages/saint-cloud.html"
+                url: "/pages/saint-cloud"
             },
             lake_nona: {
                 label: "Lake Nona",
@@ -510,8 +226,7 @@
                     "type": "Feature",
                     "properties": {
                         "id": 2,
-                        "name": "Saint Cloud",
-                        "code": "saint_cloud"
+                        "name": "Saint Cloud"
                     },
                     "geometry": {
                         "type": "Point",
@@ -972,10 +687,6 @@
                     hover: { fill: '#dee2e9', fillOpacity: 1 },
                     selectedHover: { fill: '#dee2e9' }
                 },
-                focusOn: {
-                    scale: 1.15,
-                    animate: true,
-                },
 
                 labels: {
                     regions: {
@@ -997,11 +708,6 @@
                     console.log(mapInstance, 'MAP LOADED');
                     map = mapInstance;
 
-                    // mapInstance.setFocus({
-                    //     scale: 1.15,
-                    //     animate: false
-                    // });
-
                     requestAnimationFrame(() => {
                         resolveMarkerLabelCollisions(map);
                     });
@@ -1016,9 +722,6 @@
                 },
 
                 onMarkerClick(event, index) {
-                    console.log("Marker clicked:", markersData[index], event);
-                    const code = markersData[index]?.data?.code;
-                    navigateToRegion(code);
                 },
 
                 onRegionClick(event, code) {
@@ -1197,41 +900,7 @@
         }
 
 
-        function renderServiceAreas() {
-            const container = document.getElementById('service-areas-list');
-            if (!container) return;
-
-            const regions = Object.values(REGIONS);
-
-            const columns = 4;
-            const perColumn = Math.ceil(regions.length / columns);
-
-            for (let i = 0; i < columns; i++) {
-                const ul = document.createElement('ul');
-
-                regions
-                    .slice(i * perColumn, (i + 1) * perColumn)
-                    .forEach(region => {
-                        const li = document.createElement('li');
-                        const link = document.createElement('a');
-
-                        link.href = region.url;
-                        link.textContent = region.label;
-
-                        li.appendChild(link);
-                        ul.appendChild(li);
-                    });
-
-                container.appendChild(ul);
-            }
-        }
-
-
-
-        document.addEventListener("DOMContentLoaded", () => {
-            onInitMap();
-            renderServiceAreas();
-        });
+        document.addEventListener("DOMContentLoaded", onInitMap);
     </script>
 </body>
 

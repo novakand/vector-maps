@@ -143,7 +143,15 @@
             }
         }
 
+        @media (max-width: 600px) {
+            #maps {
+                height: 380px;
+            }
 
+            .service-areas__grid {
+                grid-template-columns: 1fr;
+            }
+        }
 
         .map-section {
             padding: 8px 0;
@@ -151,22 +159,10 @@
         }
 
         #maps {
-            /* max-width: 1200px; */
-            max-width: initial;
-            height: 680px;
-            margin: 0 auto;
-            overflow: hidden;
-            /* 🔑 */
-            /* тот же цвет, что у карты */
-            border-radius: 12px;
-            /* опционально, но красиво */
-        }
-
-        /* #maps {
             max-width: 1200px;
-            height: 680px;
+            height: 720px;
             margin: 0 auto;
-        } */
+        }
 
         .service-areas {
             padding: 64px 16px 80px;
@@ -231,8 +227,6 @@
 
         #maps svg {
             shape-rendering: geometricPrecision;
-            display: block;
-            margin: 0 auto;
         }
 
 
@@ -326,29 +320,6 @@
         .service-areas__grid li::marker {
             color: #002149;
         }
-
-
-        @media (max-width: 600px) {
-            #maps {
-                height: 380px;
-            }
-
-            .map-description {
-                font-size: 18px;
-            }
-
-            .service-areas__header h2 {
-                font-size: 22px;
-            }
-
-            .service-areas__grid a {
-                font-size: 16px;
-            }
-
-            .service-areas__grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 
@@ -397,11 +368,11 @@
         const REGIONS = {
             downtown_orlando: {
                 label: "Downtown Orlando",
-                url: "/pages/downtown-orlando"
+                url: "/pages/downtown-orlando.html"
             },
             saint_cloud: {
                 label: "Saint Cloud",
-                url: "/pages/saint-cloud.html"
+                url: "/pages/saint-cloud"
             },
             lake_nona: {
                 label: "Lake Nona",
@@ -510,8 +481,7 @@
                     "type": "Feature",
                     "properties": {
                         "id": 2,
-                        "name": "Saint Cloud",
-                        "code": "saint_cloud"
+                        "name": "Saint Cloud"
                     },
                     "geometry": {
                         "type": "Point",
@@ -930,7 +900,7 @@
                 regionsSelectable: false,
                 backgroundColor: MAPS_COLORS.water,
                 zoomButtons: false,
-                zoomOnScroll: true,
+                zoomOnScroll: false,
                 zoomMin: 1,
                 zoomMax: 10,
                 zoomAnimate: false,
@@ -972,10 +942,6 @@
                     hover: { fill: '#dee2e9', fillOpacity: 1 },
                     selectedHover: { fill: '#dee2e9' }
                 },
-                focusOn: {
-                    scale: 1.15,
-                    animate: true,
-                },
 
                 labels: {
                     regions: {
@@ -997,11 +963,6 @@
                     console.log(mapInstance, 'MAP LOADED');
                     map = mapInstance;
 
-                    // mapInstance.setFocus({
-                    //     scale: 1.15,
-                    //     animate: false
-                    // });
-
                     requestAnimationFrame(() => {
                         resolveMarkerLabelCollisions(map);
                     });
@@ -1016,9 +977,6 @@
                 },
 
                 onMarkerClick(event, index) {
-                    console.log("Marker clicked:", markersData[index], event);
-                    const code = markersData[index]?.data?.code;
-                    navigateToRegion(code);
                 },
 
                 onRegionClick(event, code) {

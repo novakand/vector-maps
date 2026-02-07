@@ -383,8 +383,8 @@
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/jsvectormap"></script>
-    <script src="./data/regions/orlando-metro.js"></script>
-    <script src="./data/regions//winter-springs.js"></script>
+    <script src="/data/regions/orlando-metro.js"></script>
+    <script src="/data/regions/saint-cloud.js"></script>
 
 
     <script>
@@ -397,7 +397,7 @@
         const REGIONS = {
             downtown_orlando: {
                 label: "Downtown Orlando",
-                url: "/pages/downtown-orlando"
+                url: "/pages/downtown-orlando.html"
             },
             saint_cloud: {
                 label: "Saint Cloud",
@@ -510,8 +510,7 @@
                     "type": "Feature",
                     "properties": {
                         "id": 2,
-                        "name": "Saint Cloud",
-                        "code": "saint_cloud"
+                        "name": "Saint Cloud"
                     },
                     "geometry": {
                         "type": "Point",
@@ -926,7 +925,7 @@
 
             map = new jsVectorMap({
                 selector: "#maps",
-                map: "orlando-metro",
+                map: "saint-cloud",
                 regionsSelectable: false,
                 backgroundColor: MAPS_COLORS.water,
                 zoomButtons: false,
@@ -1016,9 +1015,6 @@
                 },
 
                 onMarkerClick(event, index) {
-                    console.log("Marker clicked:", markersData[index], event);
-                    const code = markersData[index]?.data?.code;
-                    navigateToRegion(code);
                 },
 
                 onRegionClick(event, code) {

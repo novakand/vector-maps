@@ -153,7 +153,7 @@
         #maps {
             /* max-width: 1200px; */
             max-width: initial;
-            height: 680px;
+            height: 520px;
             margin: 0 auto;
             overflow: hidden;
             /* 🔑 */
@@ -397,11 +397,11 @@
         const REGIONS = {
             downtown_orlando: {
                 label: "Downtown Orlando",
-                url: "/pages/downtown-orlando"
+                url: "/pages/downtown-orlando.html"
             },
             saint_cloud: {
                 label: "Saint Cloud",
-                url: "/pages/saint-cloud.html"
+                url: "/pages/saint-cloud"
             },
             lake_nona: {
                 label: "Lake Nona",
@@ -510,8 +510,7 @@
                     "type": "Feature",
                     "properties": {
                         "id": 2,
-                        "name": "Saint Cloud",
-                        "code": "saint_cloud"
+                        "name": "Saint Cloud"
                     },
                     "geometry": {
                         "type": "Point",
@@ -1016,9 +1015,6 @@
                 },
 
                 onMarkerClick(event, index) {
-                    console.log("Marker clicked:", markersData[index], event);
-                    const code = markersData[index]?.data?.code;
-                    navigateToRegion(code);
                 },
 
                 onRegionClick(event, code) {
