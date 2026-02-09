@@ -342,6 +342,10 @@
                 label: "College Park",
                 url: `${BASE_URL}/pages/college-park.html`
             },
+            celebration: {
+                label: "Celebration",
+                url: `${BASE_URL}/pages/celebration.html`
+            },
             winter_park: {
                 label: "Winter Park",
                 url: `${BASE_URL}/pages/winter-park.html`
@@ -423,6 +427,20 @@
         const datGeoJson = {
             "type": "FeatureCollection",
             "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": 1,
+                        "name": "Celebration",
+                        "code": "celebration"
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -81.55164581505892, 28.310347136785357
+                        ]
+                    }
+                },
                 {
                     "type": "Feature",
                     "properties": {
@@ -823,7 +841,11 @@
                     e.preventDefault();
                 },
                 regionStyle: {
-                    initial: { fill: '#dee2e9' },
+                    initial: {
+                        fill: '#dee2e9', stroke: '#cbd5e1',
+                        strokeWidth: 2,
+                        strokeOpacity: 1
+                    },
                     hover: { fill: '#dee2e9', fillOpacity: 1 },
                     selectedHover: { fill: '#dee2e9' }
                 },
