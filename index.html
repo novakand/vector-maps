@@ -871,6 +871,7 @@
                 },
 
                 onLoaded(mapInstance) {
+                    console.log("Map loaded", mapInstance);
                     map = mapInstance;
                     requestAnimationFrame(() => {
                         resolveMarkerLabelCollisions(map);
