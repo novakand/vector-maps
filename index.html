@@ -13,7 +13,7 @@
         :root {
             /* colors */
             --color-bg-white: #fff;
-            --color-text-main: #002149;
+            --color-text-main: #fff;
             --color-text-muted: #64748b;
             --color-accent: #ffab1e;
             --color-accent-dark: #0f172a;
@@ -803,7 +803,7 @@
                 regionsSelectable: false,
                 backgroundColor: MAPS_COLORS.water,
                 zoomButtons: false,
-                zoomOnScroll: true,
+                zoomOnScroll: false,
                 zoomMin: 1,
                 zoomMax: 10,
                 zoomAnimate: false,
@@ -842,12 +842,12 @@
                 },
                 regionStyle: {
                     initial: {
-                        fill: '#dee2e9', stroke: '#cbd5e1',
+                        fill: '#002149', stroke: '#021327',
                         strokeWidth: 2,
                         strokeOpacity: 1
                     },
-                    hover: { fill: '#dee2e9', fillOpacity: 1 },
-                    selectedHover: { fill: '#dee2e9' }
+                    hover: { fill: '#002149', fillOpacity: 1 },
+                    selectedHover: { fill: '#002149' }
                 },
                 focusOn: {
                     scale: 1.15,
